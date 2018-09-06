@@ -2,24 +2,28 @@
 var Cloud = {
   WIDTH: 420,
   HEIGHT: 270,
-  X: 100,
-  Y: 10
+  X: 150,
+  Y: 20
 };
 
 var GAP = 10;
-var FONT_GAP = 15;
-var TEXT_WIDTH = 50;
-var BAR_HEIGHT = 20;
-var barWidth = Cloud.WIDTH - GAP - TEXT_WIDTH - GAP;
+var Gap = {
+  Y: 240,
+  X: 90,
+  FONT: 5
+}
 
-// Функция отрисовки облака
-var renderCloud = function (ctx, x, y, color) {
+var Bar = {
+  WIDTH: 40,
+  HEIGHT: 150
+}
+
+var renderCloud = function (x, y, width, height, color, ctx) {
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, Cloud.WIDTH, Cloud.HEIGHT);
+  ctx.fillRect(x, y, width, height);
 };
 
-// Поиск максимального значения
-var getMaxElement = function (arr) {
+var getMaxElement = function(arr) {
   var maxElement = arr[0];
 
   for (var i = 0; i < arr.length; i++) {
@@ -32,18 +36,21 @@ var getMaxElement = function (arr) {
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  renderCloud(ctx, Cloud.X + GAP, Cloud.Y + GAP, 'rgba(0, 0, 0, 0.7)');
-  renderCloud(ctx, Cloud.X, Cloud.Y, '#fff');
+  renderCloud(Cloud.X, Cloud.Y, Cloud.WIDTH, Cloud.HEIGHT, 'rgba(0, 0, 0, 0.7)', ctx);
+  renderCloud(Cloud.X - GAP, Cloud.Y - GAP, Cloud.WIDTH, Cloud.HEIGHT, '#fff', ctx);
 
-  ctx.fillStyle = '#000';
   ctx.font = '16px PT Mono';
-  ctx.fillText('Ура вы победили!', 125, 45);
-  ctx.fillText('Список результатов:', 125, 65);
+  ctx.fillStyle = '#000';
+  ctx.fillText('Ура, вы победили!', Cloud.X + GAP, Cloud.Y + GAP * 2);
+  ctx.fillText('Список результатов:', Cloud.X + GAP, Cloud.Y + GAP * 4);
 
   var maxTime = getMaxElement(times);
+  var proportion = maxTime / Bar.HEIGHT;
 
   for (var i = 0; i < names.length; i++) {
-    ctx.fillText(names[i], Cloud.X + GAP, Cloud.Y + GAP + FONT_GAP + (GAP + BAR_HEIGHT) * i);
-    ctx.fillRect(Cloud.X + GAP + TEXT_WIDTH, Cloud.Y + GAP + (GAP + BAR_HEIGHT) * i, (barWidth * times[i]) / maxTime, BAR_HEIGHT);
+    ctx.fillStyle = (names[i] === 'Вы') ? 'rgb(255, 0, 0, 1)' : 'rgb(0, 0,' + Math.random() * 255 + ')';
+    ctx.fillText(names[i], Cloud.X + GAP * 2 + Gap.X * i, GAP * 2 + Gap.Y);
+    ctx.fillText(Math.round(times[i]), Cloud.X + GAP * 2 + Gap.X * i, Gap.Y - Gap.FONT - (times[i] / proportion));
+    ctx.fillRect(Cloud.X + GAP * 2 + Gap.X * i, Gap.Y, Bar.WIDTH, - (times[i] / proportion));
   }
 };
