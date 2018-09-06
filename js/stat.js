@@ -11,19 +11,19 @@ var Gap = {
   Y: 240,
   X: 90,
   FONT: 5
-}
+};
 
 var Bar = {
   WIDTH: 40,
   HEIGHT: 150
-}
+};
 
 var renderCloud = function (x, y, width, height, color, ctx) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, width, height);
 };
 
-var getMaxElement = function(arr) {
+var getMaxElement = function (arr) {
   var maxElement = arr[0];
 
   for (var i = 0; i < arr.length; i++) {
@@ -51,6 +51,6 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.fillStyle = (names[i] === 'Вы') ? 'rgb(255, 0, 0, 1)' : 'rgb(0, 0,' + Math.random() * 255 + ')';
     ctx.fillText(names[i], Cloud.X + GAP * 2 + Gap.X * i, GAP * 2 + Gap.Y);
     ctx.fillText(Math.round(times[i]), Cloud.X + GAP * 2 + Gap.X * i, Gap.Y - Gap.FONT - (times[i] / proportion));
-    ctx.fillRect(Cloud.X + GAP * 2 + Gap.X * i, Gap.Y, Bar.WIDTH, - (times[i] / proportion));
+    ctx.fillRect(Cloud.X + GAP * 2 + Gap.X * i, Gap.Y, Bar.WIDTH, -(times[i] / proportion));
   }
 };
