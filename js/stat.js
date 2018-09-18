@@ -1,79 +1,65 @@
 'use strict';
+
 var Cloud = {
   WIDTH: 420,
   HEIGHT: 270,
-  X: 150,
-  Y: 20
+  X: 100,
+  Y: 10
 };
 
-var GAP = 10;
-var Gap = {
-  Y: 240,
-  X: 90,
-  FONT: 5
-};
-
-var Bar = {
+var Chart = {
   WIDTH: 40,
-  HEIGHT: 150
+  HEIGHT: 150,
+  X: 145,
+  Y: 240,
+  BETWEEN: 50
 };
 
-var renderCloud = function (x, y, width, height, color, ctx) {
+var renderCloud = function (ctx, x, y, width, height, color) {
   var currentColor = color || '#000000';
+
   ctx.fillStyle = currentColor;
   ctx.fillRect(x, y, width, height);
 };
 
-var renderText = function (x, y, color, text, ctx) {
-  ctx.fillStyle = color;
-  ctx.fillText(text, x, y);
-};
+var renderText = function (ctx, text, x, y, color, font) {
+  var currentColor = color || '#000000';
+  var currentFont = font || '16px PT Mono';
 
-var getMaxElement = function (arr) {
-  var maxElement = arr[0];
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] > maxElement) {
-      maxElement = arr[i];
-    }
-  }
-  return maxElement;
+  ctx.font = currentFont;
+  ctx.fillStyle = currentColor;
+  ctx.fillText(text, x, y);
 };
 
 window.renderStatistics = function (ctx, names, times) {
 
+  var MARGIN = 15;
+
   var drawCloud = function (x, y, width, height) {
-    renderCloud(Cloud.X, Cloud.Y, Cloud.WIDTH, Cloud.HEIGHT, 'rgba(0, 0, 0, 0.7)', ctx);
-    renderCloud(Cloud.X - GAP, Cloud.Y - GAP, Cloud.WIDTH, Cloud.HEIGHT, '#fff', ctx);
+    renderCloud(ctx, x + MARGIN, y + MARGIN, width, height, 'rgba(0, 0, 0, 0.7)');
+    renderCloud(ctx, x, y, width, height, 'rgb(255, 255, 255)');
   };
 
+  var drawInfo = function (arr, y) {
+    ctx.fillStyle = 'rgb(0, 0, 0)';
+    ctx.fillText(arr, Chart.WIDTH * j + Chart.BETWEEN * j + Chart.X, y);
+  };
 
-  var maxTime = getMaxElement(times);
+  drawCloud(Cloud.X, Cloud.Y, Cloud.WIDTH, Cloud.HEIGHT);
 
-  var renderLengthText = function (text, fontStyle, color) {
-    var textLength = text.length;
-    ctx.font = fontStyle;
-    ctx.fillStyle = color;
-    for (var i = 0; i < textLength; i++) {
-      ctx.fillText(text[i], Cloud.X + GAP, Cloud.Y + GAP * i);
+  renderText(ctx, 'Ура вы победили!', 155, 45);
+  renderText(ctx, 'Список результатов:', 155, 65);
+
+  var topTimes = 0;
+  for (var i = 0; i <= times.lenght - 1; i += 1) {
+    if (times[i] > topTimes) {
+      topTimes = Math.floor(times[i]);
     }
-  };
+  }
+  for (var j = 0; j <= names.lenght - 1; j += 1) {
+    renderCloud(ctx, Chart.WIDTH * j + Chart.BETWEEN * j + Chart.X, Chart.Y, Chart.WIDTH, -(Chart.HEIGHT * times[j]) / topTimes, (names[j] === 'вы') ? '#FF0000' : 'rgba(0, 0, 255, ' + Math.random().toFixed(2) + ')');
 
-  var textStyle = '16px PT Mono';
-  var textColor = '#000';
-  var textStrings = ['Ура вы победили!', 'Список результатов:'];
-
-  renderLengthText(textStyle, textColor, textStrings);
-
-  var calculateColumn = function () {
-    return Cloud.X + GAP * 2 + Gap.X * i;
-  };
-
-  var proportion = maxTime / Bar.HEIGHT;
-
-  for (var i = 0; i < names.length; i++) {
-    var currentColor = (names[i] === 'Вы') ? 'rgb(255, 0, 0, 1)' : 'rgb(0, 0,' + Math.random() * 255 + ')';
-    renderText(names[i], textColor, calculateColumn(), GAP * 2 + Gap.Y, ctx);
-    renderText(Math.round(times[i]), textColor, calculateColumn(), Gap.Y - Gap.FONT - (times[i] / proportion), ctx);
-    renderCloud(calculateColumn(), Gap.Y, Bar.WIDTH, -(times[i] / proportion), currentColor, ctx);
+    drawInfo(Math.floor(times[j]), Chart.HEIGHT * 1.55 - (Chart.HEIGHT * times[j]) / topTimes);
+    drawInfo(names[j], 260);
   }
 };
