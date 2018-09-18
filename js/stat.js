@@ -51,12 +51,12 @@ window.renderStatistics = function (ctx, names, times) {
   renderText(ctx, 'Список результатов:', 155, 65);
 
   var topTimes = 0;
-  for (var i = 0; i <= times.lenght - 1; i += 1) {
+  for (var i = 0; i <= times.length - 1; i += 1) {
     if (times[i] > topTimes) {
       topTimes = Math.floor(times[i]);
     }
   }
-  for (var j = 0; j <= names.lenght - 1; j += 1) {
+  for (var j = 0; j <= names.length - 1; j += 1) {
     renderCloud(ctx, Chart.WIDTH * j + Chart.BETWEEN * j + Chart.X, Chart.Y, Chart.WIDTH, -(Chart.HEIGHT * times[j]) / topTimes, (names[j] === 'вы') ? '#FF0000' : 'rgba(0, 0, 255, ' + Math.random().toFixed(2) + ')');
 
     drawInfo(Math.floor(times[j]), Chart.HEIGHT * 1.55 - (Chart.HEIGHT * times[j]) / topTimes);
